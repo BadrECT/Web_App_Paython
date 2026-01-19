@@ -30,9 +30,13 @@
 
 ## 📸 Screenshots
 
-| Dashboard | Project View |
+| <img src="screenshots/dashboard.png" width="400" alt="Dashboard"> | <img src="screenshots/projects.png" width="400" alt="Project List"> |
 |:---:|:---:|
-| *Futuristic stats overview with neon charts* | *Clean, glass-panel project details & team lists* |
+| **Dynamic Dashboard with Real-Time Stats** | **Glass-Panel Project List** |
+
+| <img src="screenshots/task_detail.png" width="800" alt="Task Detail"> |
+|:---:|
+| **Immersive Task Detail View** |
 
 ---
 
