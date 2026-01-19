@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <span class="navbar-text">
+                <i class="fas fa-clock"></i> <span id="live-clock"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ total_projects }}</h4>
+                        <p class="card-text">Projets</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-project-diagram fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ total_tasks }}</h4>
+                        <p class="card-text">Tâches totales</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-tasks fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ completed_tasks }}</h4>
+                        <p class="card-text">Tâches terminées</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <div class="d-flex">
+                    <div>
+                        <h4>{{ overdue_tasks }}</h4>
+                        <p class="card-text">Tâches en retard</p>
+                    </div>
+                    <div class="ms-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Mes Projets Récents</h5>
+            </div>
+            <div class="card-body">
+                {% if projects %}
+                    <div class="list-group">
+                        {% for project in projects %}
+                            <a href="{% url 'project_detail' project.pk %}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ project.name }}</h6>
+                                    <small class="text-{{ project.get_status_display|lower }}">{{ project.get_status_display }}</small>
+                                </div>
+                                <p class="mb-1">{{ project.description|truncatewords:10 }}</p>
+                                <small>Manager: {{ project.manager.username }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucun projet assigné.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5>Mes Tâches Récents</h5>
+            </div>
+            <div class="card-body">
+                {% if tasks %}
+                    <div class="list-group">
+                        {% for task in tasks %}
+                            <a href="{% url 'task_detail' task.pk %}" class="list-group-item list-group-item-action task-priority-{{ task.priority }}">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ task.title }}</h6>
+                                    <small class="text-{{ task.get_status_display|lower }}">{{ task.get_status_display }}</small>
+                                </div>
+                                <p class="mb-1">{{ task.description|truncatewords:10 }}</p>
+                                <small>Échéance: {{ task.due_date }}</small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucune tâche assignée.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

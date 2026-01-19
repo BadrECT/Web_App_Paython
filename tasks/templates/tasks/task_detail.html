@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ task.title }} - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">{{ task.title }}</h1>
+    <div>
+        <span class="badge bg-{% if task.priority == 'urgent' %}danger{% elif task.priority == 'high' %}warning{% elif task.priority == 'medium' %}info{% else %}success{% endif %} me-2">
+            {{ task.get_priority_display }}
+        </span>
+        <span class="badge bg-{% if task.status == 'done' %}success{% elif task.status == 'in_progress' %}primary{% else %}secondary{% endif %}">
+            {{ task.get_status_display }}
+        </span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Description</h5>
+            </div>
+            <div class="card-body">
+                <p>{{ task.description|linebreaks }}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Projet:</strong> 
+                        <a href="{% url 'project_detail' task.project.pk %}">{{ task.project.name }}</a>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Assignée à:</strong> {{ task.assigned_to.get_full_name|default:task.assigned_to.username }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Échéance:</strong> {{ task.due_date }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Temps estimé:</strong> {{ task.estimated_hours }}h
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Temps réel:</strong> {{ task.actual_hours }}h
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Créée par:</strong> {{ task.created_by.get_full_name|default:task.created_by.username }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Commentaires</h5>
+            </div>
+            <div class="card-body">
+                {% for comment in comments %}
+                <div class="border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <strong>{{ comment.author.get_full_name|default:comment.author.username }}</strong>
+                        <small class="text-muted">{{ comment.created_at }}</small>
+                    </div>
+                    <p class="mb-0 mt-2">{{ comment.content|linebreaks }}</p>
+                </div>
+                {% empty %}
+                <p class="text-muted">Aucun commentaire pour le moment.</p>
+                {% endfor %}
+
+                <form method="post" class="mt-4">
+                    {% csrf_token %}
+                    {{ comment_form|crispy }}
+                    <button type="submit" name="comment" class="btn btn-primary">Ajouter un commentaire</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Enregistrer du temps</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ time_form|crispy }}
+                    <button type="submit" name="time_log" class="btn btn-success w-100">Enregistrer le temps</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Historique du temps</h5>
+            </div>
+            <div class="card-body">
+                {% if time_logs %}
+                <div class="list-group list-group-flush">
+                    {% for time_log in time_logs %}
+                    <div class="list-group-item">
+                        <div class="d-flex justify-content-between">
+                            <strong>{{ time_log.user.get_full_name|default:time_log.user.username }}</strong>
+                            <span class="badge bg-primary">{{ time_log.hours }}h</span>
+                        </div>
+                        <small class="text-muted">{{ time_log.date }}</small>
+                        {% if time_log.description %}
+                        <p class="mb-0 mt-1 small">{{ time_log.description }}</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-muted">Aucun temps enregistré.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

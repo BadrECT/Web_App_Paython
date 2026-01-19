@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Mes Tâches - Task Manager{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Mes Tâches</h1>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Tâches Assignées</h5>
+            </div>
+            <div class="card-body">
+                {% if tasks %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Projet</th>
+                                <th>Priorité</th>
+                                <th>Statut</th>
+                                <th>Échéance</th>
+                                <th>Temps estimé</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in tasks %}
+                            <tr class="task-priority-{{ task.priority }}">
+                                <td>{{ task.title }}</td>
+                                <td>
+                                    <a href="{% url 'project_detail' task.project.pk %}">{{ task.project.name }}</a>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if task.priority == 'urgent' %}danger{% elif task.priority == 'high' %}warning{% elif task.priority == 'medium' %}info{% else %}success{% endif %}">
+                                        {{ task.get_priority_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{% if task.status == 'done' %}success{% elif task.status == 'in_progress' %}primary{% else %}secondary{% endif %}">
+                                        {{ task.get_status_display }}
+                                    </span>
+                                </td>
+                                <td>{{ task.due_date }}</td>
+                                <td>{{ task.estimated_hours }}h</td>
+                                <td>
+                                    <a href="{% url 'task_detail' task.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Aucune tâche assignée.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
