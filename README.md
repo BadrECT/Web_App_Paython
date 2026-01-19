@@ -108,5 +108,3 @@ Contributions are welcome! Please fork the repository and submit a Pull Request.
 ## 📧 Contact
 
 **BadrECT** - [badrkaanoune005@gmail.com](mailto:badrkaanoune005@gmail.com)
-
-Project Link: [https://github.com/BadrECT/Web_App_Paython](https://github.com/BadrECT/Web_App_Paython)
